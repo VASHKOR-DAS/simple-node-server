@@ -49,8 +49,22 @@ async function run() {
     try {
         const userCollection = client.db('simpleNode').collection('users');
         const user = { name: 'Nahiya Mahi', email: 'nehi@gmail.com' }
-        const result = await userCollection.insertOne(user);
-        console.log(result);
+        // const result = await userCollection.insertOne(user);
+        // console.log(result);
+
+        app.post('/users', async (req, res) => {
+            // console.log('Post API called'); //client site theke hit kore kina ta janar jnno (middle ware)
+            // console.log(req.body); // client site theke body er moddhe data pathano hoise tai read kora
+            const user = req.body;
+            user.id = users.length + 1; // users er majhe jotogulo obj ase tar theke 1 besi id
+            // users.push(user);
+            // console.log(user);
+            const result = await userCollection.insertOne(user);
+            console.log(result);
+            user.id = result.insertedId; //db theke id set krlm
+            res.send(user);
+        
+        })
     }
     finally {
 
@@ -58,6 +72,21 @@ async function run() {
 }
 
 run().catch(err => console.log(err))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -85,7 +114,7 @@ app.post('/users', (req, res) => {
     console.log(user);
     res.send(user);
 
-});
+})
 
 
 
