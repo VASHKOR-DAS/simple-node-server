@@ -1,6 +1,9 @@
 const express = require('express');
 const app = express();
 const cors = require('cors') // load data on other domain
+
+const { MongoClient, ServerApiVersion } = require('mongodb');
+
 const port = process.env.PORT || 5000;
 
 app.use(cors());
@@ -15,6 +18,19 @@ const users = [
     { "id": 2, "name": "Mcfarland", "email": "mcfarland@yahoo.com" },
     { "id": 3, "name": "Joy", "email": "joy@hotmail.com" }
 ];
+
+// username : dbUser1, password: rb6F6TOJ5ICprjrK
+
+
+const uri = "mongodb+srv://dbUser1:rb6F6TOJ5ICprjrK@cluster0.wbb4jrx.mongodb.net/?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+client.connect(err => {
+  const collection = client.db("simpleNode").collection("users");
+  // perform actions on the collection object
+  console.log('Database connected');
+  client.close();
+});
+
 
 app.get('/users', (req, res) => {
     console.log(req.query); // query diye data filter kore
