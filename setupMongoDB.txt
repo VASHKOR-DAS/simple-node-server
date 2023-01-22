@@ -1,0 +1,12 @@
+npm i mongodb
+Go to mongodb atlas
+signIN
+
+
+
+
+
+
+
+
+Insert a document crud

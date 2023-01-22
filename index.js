@@ -1,17 +1,16 @@
 const express = require('express');
-const app = express();
 const cors = require('cors') // load data on other domain
-
 const { MongoClient, ServerApiVersion } = require('mongodb');
-
+const app = express();
 const port = process.env.PORT || 5000;
-
-app.use(cors());
-app.use(express.json()); //client site theke data ta json a convert kora
 
 app.get('/', (req, res) => {
     res.send('Simple node server API running');
 });
+
+app.use(cors());
+app.use(express.json()); //client site theke data ta json a convert kora
+
 
 const users = [
     { "id": 1, "name": "Buckley", "email": "buckley@gmail.com" },
@@ -19,17 +18,47 @@ const users = [
     { "id": 3, "name": "Joy", "email": "joy@hotmail.com" }
 ];
 
-// username : dbUser1, password: rb6F6TOJ5ICprjrK
+// username : dbUser1, password: CIn42bwZCXBOMFBm
 
 
-const uri = "mongodb+srv://dbUser1:rb6F6TOJ5ICprjrK@cluster0.wbb4jrx.mongodb.net/?retryWrites=true&w=majority";
+const uri = "mongodb+srv://dbUser1:CIn42bwZCXBOMFBm@cluster0.wbb4jrx.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
-client.connect(err => {
-  const collection = client.db("simpleNode").collection("users");
-  // perform actions on the collection object
-  console.log('Database connected');
-  client.close();
-});
+
+
+//  normally function likhte hole 
+//     function run(){
+
+//     }
+
+//     run() // call kortam aivabe
+
+//     but async function korte hole, function call krr por .catch(console.dir)
+//     //dir 1ta function means,je obj ta asbe tar sob property gulo log kortese
+
+
+//     Ami db er moddhe 1ta userCollection banalam
+//     then 1ta collection
+
+//     then 1ta object banalam user nam a
+
+//     then seta k userCollection a send kore dilam (1bar)
+
+
+
+async function run() {
+    try {
+        const userCollection = client.db('simpleNode').collection('users');
+        const user = { name: 'Nahiya Mahi', email: 'nehi@gmail.com' }
+        const result = await userCollection.insertOne(user);
+        console.log(result);
+    }
+    finally {
+
+    }
+}
+
+run().catch(err => console.log(err))
+
 
 
 app.get('/users', (req, res) => {
