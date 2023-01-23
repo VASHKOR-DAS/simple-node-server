@@ -12,11 +12,11 @@ app.use(cors());
 app.use(express.json()); //client site theke data ta json a convert kora
 
 
-const users = [
-    { "id": 1, "name": "Buckley", "email": "buckley@gmail.com" },
-    { "id": 2, "name": "Mcfarland", "email": "mcfarland@yahoo.com" },
-    { "id": 3, "name": "Joy", "email": "joy@hotmail.com" }
-];
+// const users = [
+//     { "id": 1, "name": "Buckley", "email": "buckley@gmail.com" },
+//     { "id": 2, "name": "Mcfarland", "email": "mcfarland@yahoo.com" },
+//     { "id": 3, "name": "Joy", "email": "joy@hotmail.com" }
+// ];
 
 // username : dbUser1, password: CIn42bwZCXBOMFBm
 
@@ -48,22 +48,24 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 async function run() {
     try {
         const userCollection = client.db('simpleNode').collection('users');
-        const user = { name: 'Nahiya Mahi', email: 'nehi@gmail.com' }
+        // const user = { name: 'Nahiya Mahi', email: 'nehi@gmail.com' }
         // const result = await userCollection.insertOne(user);
         // console.log(result);
 
+        // db theke server a data load
+        app.get('/users', async (req, res) => {
+            const cursor = userCollection.find({}); // find({}) {} aikhane query likheo filter kora jay, find means data load kora 
+            const users = await cursor.toArray(); // cursor pawar por array te convert kore dibe
+            res.send(users);
+        })
+
+        //db te server theke data send
         app.post('/users', async (req, res) => {
-            // console.log('Post API called'); //client site theke hit kore kina ta janar jnno (middle ware)
-            // console.log(req.body); // client site theke body er moddhe data pathano hoise tai read kora
             const user = req.body;
-            user.id = users.length + 1; // users er majhe jotogulo obj ase tar theke 1 besi id
-            // users.push(user);
-            // console.log(user);
             const result = await userCollection.insertOne(user);
             console.log(result);
-            user.id = result.insertedId; //db theke id set krlm
+            user._id = result.insertedId; //db theke id set krlm
             res.send(user);
-        
         })
     }
     finally {
@@ -89,32 +91,34 @@ run().catch(err => console.log(err))
 
 
 
+// server theke data read
+// app.get('/users', (req, res) => {
+//     console.log(req.query); // query diye data filter kore
+//     const search = req.query.name; // name diye search kora query diye
+//     if (req.query.name) {
+//         // filter user by query
+//         // http://localhost:5000/users?name=joy aikhane name property likhe search dite parbo
+//         const filtered = users.filter(usr => usr.name.toLocaleLowerCase().indexOf(search) >= 0);
+//         res.send(filtered); // filtered jinish gulo send
+//     }
+//     else {
+//         res.send(users);
+//     }
+// });
 
-app.get('/users', (req, res) => {
-    console.log(req.query); // query diye data filter kore
-    const search = req.query.name; // name diye search kora query diye
-    if (req.query.name) {
-        // filter user by query
-        // http://localhost:5000/users?name=joy aikhane name property likhe search dite parbo
-        const filtered = users.filter(usr => usr.name.toLocaleLowerCase().indexOf(search) >= 0);
-        res.send(filtered); // filtered jinish gulo send
-    }
-    else {
-        res.send(users);
-    }
-});
+
 
 // Client site theke data server a pathabo
-app.post('/users', (req, res) => {
-    // console.log('Post API called'); //client site theke hit kore kina ta janar jnno (middle ware)
-    // console.log(req.body); // client site theke body er moddhe data pathano hoise tai read kora
-    const user = req.body;
-    user.id = users.length + 1; // users er majhe jotogulo obj ase tar theke 1 besi id
-    users.push(user);
-    console.log(user);
-    res.send(user);
+// app.post('/users', (req, res) => {
+//     // console.log('Post API called'); //client site theke hit kore kina ta janar jnno (middle ware)
+//     // console.log(req.body); // client site theke body er moddhe data pathano hoise tai read kora
+//     const user = req.body;
+//     user.id = users.length + 1; // users er majhe jotogulo obj ase tar theke 1 besi id
+//     users.push(user);
+//     console.log(user);
+//     res.send(user);
 
-})
+// })
 
 
 
